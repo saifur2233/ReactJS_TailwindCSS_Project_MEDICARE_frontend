@@ -1,15 +1,20 @@
-import { data } from "autoprefixer";
 import React, { useContext, useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import PrimaryButton from "../../Components/PrimaryButton/PrimaryButton";
 import { AuthContext } from "../../Context/UserContext";
 import toast from "react-hot-toast";
+import useToken from "../../hooks/useToken";
 
 const SignUp = () => {
   const navigate = useNavigate();
   const [error, setError] = useState(null);
   const { createUser, updateUser } = useContext(AuthContext);
+  const [createUserEmail, setCreatedUserEmail] = useState("");
+  const [token] = useToken(createUserEmail);
 
+  if (token) {
+    navigate("/");
+  }
   const handleRegistration = (event) => {
     event.preventDefault();
     const form = event.target;
@@ -29,10 +34,14 @@ const SignUp = () => {
         console.log(user);
         toast("User created Successfully");
         const userInfo = {
-          displayName: data.name,
+          displayName: name,
         };
         updateUser(userInfo)
-          .then(() => {})
+          .then(() => {
+            saveUser(name, email);
+            form.reset();
+            navigate("/");
+          })
           .catch((err) => setError(err));
         form.reset();
         navigate("/");
@@ -41,6 +50,34 @@ const SignUp = () => {
         setError(error.message);
       });
   };
+
+  const saveUser = (name, email) => {
+    const user = { name, email };
+    fetch("http://localhost:5000/users", {
+      method: "POST",
+      headers: {
+        "content-type": "application/json",
+      },
+      body: JSON.stringify(user),
+    })
+      .then((res) => res.json())
+      .then((data) => {
+        console.log("Save user ", data);
+        setCreatedUserEmail(email);
+      });
+  };
+
+  // const getUserToken = (email) => {
+  //   fetch(`http://localhost:5000/jwt?email=${email}`)
+  //     .then((res) => res.json())
+  //     .then((data) => {
+  //       if (data.accessToken) {
+  //         localStorage.setItem("accessToken", data.accessToken);
+  //         navigate("/");
+  //       }
+  //     });
+  // };
+
   return (
     <div className="flex justify-center my-16">
       <form

@@ -2,6 +2,7 @@ import React, { useContext, useState } from "react";
 import { Link, useLocation, useNavigate } from "react-router-dom";
 import PrimaryButton from "../../Components/PrimaryButton/PrimaryButton";
 import { AuthContext } from "../../Context/UserContext";
+import useToken from "../../hooks/useToken";
 
 const Login = () => {
   const { logIn } = useContext(AuthContext);
@@ -9,7 +10,12 @@ const Login = () => {
   const location = useLocation();
   const from = location.state?.from?.pathname || "/";
   const [error, setError] = useState(null);
-
+  const [loginUserEmail, setLoginUserEmail] = useState("");
+  console.log(loginUserEmail);
+  const [token] = useToken(loginUserEmail);
+  if (token) {
+    navigate(from, { replace: true });
+  }
   const handleLogin = (event) => {
     event.preventDefault();
     const form = event.target;
@@ -21,8 +27,9 @@ const Login = () => {
       .then((result) => {
         const user = result.user;
         console.log(user);
-        form.reset();
-        navigate(from, { replace: true });
+        //form.reset();
+        console.log(user?.email);
+        setLoginUserEmail(user?.email);
       })
       .catch(() => {
         setError("Eamil and Password not match!...");
@@ -47,7 +54,6 @@ const Login = () => {
                 name="email"
                 placeholder="Email"
                 className="input input-bordered"
-                required
               />
             </div>
             <div className="form-control">
@@ -59,7 +65,6 @@ const Login = () => {
                 name="password"
                 placeholder="Password"
                 className="input input-bordered"
-                required
               />
             </div>
             <div className="form-control mt-6">
