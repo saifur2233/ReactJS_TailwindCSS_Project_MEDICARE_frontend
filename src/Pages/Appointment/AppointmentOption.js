@@ -2,9 +2,9 @@ import React from "react";
 import PrimaryButton from "../../Components/PrimaryButton/PrimaryButton";
 
 const AppointmentOption = ({ option, setTreatment }) => {
-  const { name, slots } = option;
+  const { name, price, slots } = option;
   return (
-    <div className="card shadow-xl">
+    <div className="card shadow-2xl">
       <div className="card-body items-center text-center">
         <h2 className="card-title text-center text-secondary font-bold">
           {name}
@@ -13,6 +13,7 @@ const AppointmentOption = ({ option, setTreatment }) => {
         <p>
           {slots.length} {slots.length > 1 ? "spaces" : "space"} available
         </p>
+        <p>Visiting Fee: ${price}</p>
         <div className="card-actions">
           <label
             disabled={slots.length === 0}

@@ -5,7 +5,7 @@ import PrimaryButton from "../../../Components/PrimaryButton/PrimaryButton";
 import { AuthContext } from "../../../Context/UserContext";
 
 const BookingModal = ({ treatment, selectedDate, setTreatment, refetch }) => {
-  const { name, slots } = treatment;
+  const { name, slots, price } = treatment;
   const { user } = useContext(AuthContext);
   const date = format(selectedDate, "PP");
 
@@ -25,6 +25,7 @@ const BookingModal = ({ treatment, selectedDate, setTreatment, refetch }) => {
       phone,
       slot,
       email,
+      price,
     };
 
     fetch("http://localhost:5000/bookings", {
@@ -55,7 +56,7 @@ const BookingModal = ({ treatment, selectedDate, setTreatment, refetch }) => {
         <div className="modal-box relative">
           <label
             htmlFor="booking-modal"
-            className="btn btn-sm btn-circle absolute right-2 top-2"
+            className="btn btn-sm btn-error btn-circle text-white absolute right-2 top-2"
           >
             ✕
           </label>
